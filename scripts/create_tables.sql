@@ -1,0 +1,61 @@
+CREATE DATABASE IF NOT EXISTS Tienda_Jenser_Max;
+USE Tienda_Jenser_Max;
+
+
+CREATE TABLE Compradores (
+    id_comprador INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    direccion VARCHAR(100),
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updateAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Telefonos_Compradores (
+    id_telefono INT AUTO_INCREMENT PRIMARY KEY,
+    id_comprador INT NOT NULL,
+    telefono VARCHAR(10) NOT NULL,
+    FOREIGN KEY (id_comprador) REFERENCES compradores(id_comprador) ON DELETE CASCADE
+);
+
+CREATE TABLE Productos (
+    id_producto INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10,2) NOT NULL,
+    stock INT NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updateAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Compras (
+    id_compra INT AUTO_INCREMENT PRIMARY KEY,
+    id_comprador INT,
+    fecha_compra DATETIME DEFAULT CURRENT_TIMESTAMP,
+    total DECIMAL(10,2) NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updateAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_comprador) REFERENCES compradores(id_comprador) ON DELETE SET NULL
+);
+
+CREATE TABLE Detalle_Compras (
+    id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+    id_compra INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT NOT NULL,
+    precio_unitario DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (id_compra) REFERENCES compras(id_compra) ON DELETE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Pagos (
+    id_pago INT AUTO_INCREMENT PRIMARY KEY,
+    id_compra INT,
+    monto DECIMAL(10,2) NOT NULL,
+    fecha_pago DATETIME DEFAULT CURRENT_TIMESTAMP,
+    metodo_pago VARCHAR(50),
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updateAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_compra) REFERENCES compras(id_compra) ON DELETE CASCADE
+);
